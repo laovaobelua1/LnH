@@ -59,24 +59,22 @@ const styles = {
     overlay: {
       position: 'fixed',
       top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: 'rgba(0, 20, 40, 0.85)', // Màu xanh đen đậm chất ngân hàng
-      backdropFilter: 'blur(8px)', // Hiệu ứng kính mờ thời thượng
+      backgroundColor: 'rgba(0, 20, 40, 0.85)',
+      backdropFilter: 'blur(8px)', 
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      zIndex: 99999, // Luôn nổi lên trên cùng
+      zIndex: 99999, 
       color: '#fff',
       fontFamily: "'Segoe UI', Roboto, sans-serif",
     },
-    // Container chứa biểu tượng
     spinnerBox: {
         position: 'relative',
         width: '100px',
         height: '100px',
         marginBottom: '25px',
     },
-    // Dòng chữ thông báo
     text: {
       fontSize: '18px',
       fontWeight: '600',
@@ -89,8 +87,6 @@ const styles = {
     }
 }
 
-// 3. Component chính
-// Nhận vào prop "text" để hiển thị nội dung động
 const LoadingSpinner = ({ text = "Đang xử lý..." }) => {
     return (
         <div style={styles.overlay}>

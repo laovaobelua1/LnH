@@ -1,27 +1,23 @@
-// File: src/components/GlobalModal.jsx
 import React from 'react';
 
 const GlobalModal = ({ config, onClose, styles }) => {
     if (!config || !config.isOpen) return null;
 
-    // 1. Kiểm tra loại thông báo
     const isError = config.type === 'error';
-    const isSuccess = config.type === 'success'; // Mới thêm
+    const isSuccess = config.type === 'success'; 
 
-    // 2. Chọn Style Content tương ứng
-    let contentStyle = styles.modalContent; // Mặc định
+    let contentStyle = styles.modalContent; 
     if (isError) contentStyle = styles.modalContentError || styles.modalContent;
     if (isSuccess) contentStyle = styles.modalContentSuccess || styles.modalContent;
 
-    // 3. Cấu hình Theme (Màu sắc & Icon)
-    let themeColor = '#007bff'; // Xanh dương (Info)
+    let themeColor = '#007bff'; 
     let icon = '🛠️';
 
     if (isError) {
-        themeColor = '#dc3545'; // Đỏ
+        themeColor = '#dc3545'; 
         icon = '⚠️';
     } else if (isSuccess) {
-        themeColor = '#28a745'; // Xanh lá
+        themeColor = '#28a745'; 
         icon = '✅';
     }
 

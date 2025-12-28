@@ -12,7 +12,7 @@ const Transfer = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem('user'));
-  const billRef = useRef(null); // Ref để chụp ảnh hóa đơn
+  const billRef = useRef(null); 
 
   // --- STATE QUẢN LÝ ---
   const [formData, setFormData] = useState({
@@ -32,7 +32,7 @@ const Transfer = () => {
   const { notification, showFeature, showError, showSuccess, closeNotification } = useNotification();
   const { showLoading, hideLoading, isLoading } = useGlobalLoading();
 
-  // --- LOGIC (GIỮ NGUYÊN NHƯ CŨ) ---
+
   useEffect(() => {
     const fetchAccountInfo = async () => {
       if (!user || !user.id) { navigate('/'); return; }
@@ -95,8 +95,8 @@ const Transfer = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (inputCaptcha.toUpperCase() !== captchaCode) { showError("❌ Mã Captcha sai!"); generateCaptcha(); return; }
-    if (parseFloat(formData.amount) > currentBalance) { showError("❌ Số dư không đủ!"); return; }
+    if (inputCaptcha.toUpperCase() !== captchaCode) { showError("Mã Captcha sai!"); generateCaptcha(); return; }
+    if (parseFloat(formData.amount) > currentBalance) { showError("Số dư không đủ!"); return; }
 
     showLoading("Đang xử lý...");
     try {
@@ -108,7 +108,7 @@ const Transfer = () => {
       };
       const res = await bankingService.createTransaction(user.id, payload);
       setTransactionResult(res.data);
-    } catch (error) { showError(`❌ Lỗi: ${error.response?.data?.message || 'Thất bại'}`); generateCaptcha(); } 
+    } catch (error) { showError(`Lỗi: ${error.response?.data?.message || 'Thất bại'}`); generateCaptcha(); } 
     finally { hideLoading(); }
   };
 
@@ -220,22 +220,22 @@ const Transfer = () => {
     },
     billCard: {
         background: 'white', width: '100%', maxWidth: '380px',
-        padding: '0', borderRadius: '0', // Hóa đơn vuông vức hoặc răng cưa
+        padding: '0', borderRadius: '0',
         position: 'relative', overflow: 'hidden',
         boxShadow: '0 25px 50px rgba(0,0,0,0.25)'
     },
     billHeader: {
         background: '#28a745', padding: '30px 20px', textAlign: 'center', color: 'white',
-        borderBottom: '5px dashed white' // Giả hiệu ứng xé giấy
+        borderBottom: '5px dashed white' 
     }
   };
 
-  // --- RENDER BILL (HÓA ĐƠN KHI THÀNH CÔNG) ---
+
   if (transactionResult) {
     return (
         <div style={styles.billOverlay}>
             <div style={styles.billCard} ref={billRef}>
-                {/* Phần Xanh lá trên đầu */}
+
                 <div style={styles.billHeader}>
                     <div style={{width: '60px', height: '60px', background: 'white', borderRadius: '50%', margin: '0 auto 15px auto', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                         <span style={{fontSize: '30px', color: '#28a745'}}>✓</span>
@@ -270,7 +270,6 @@ const Transfer = () => {
     );
   }
 
-  // --- RENDER FORM CHUYỂN TIỀN ---
   return (
     <Layout>
       <div style={styles.container}>
@@ -315,7 +314,6 @@ const Transfer = () => {
                         style={styles.input}
                     />
                     {!isAccountChecked ? (
-                        // TRƯỜNG HỢP 1: Nút Kiểm tra
                         <button 
                             type="button" 
                             onClick={handleCheckAccount} 
@@ -330,16 +328,15 @@ const Transfer = () => {
                             KIỂM TRA
                         </button>
                     ) : (
-                        // TRƯỜNG HỢP 2: Nút Sửa (Reset)
                         <button 
                             type="button" 
                             onClick={handleResetAccount} 
-                            disabled={isLoading} // Cũng nên chặn nút này luôn nếu app đang bận
+                            disabled={isLoading} 
                             style={{
                                 ...styles.btnCheck, 
                                 background: '#ffc107', 
                                 color: '#333',
-                                // Giữ hiệu ứng mờ đồng bộ
+
                                 opacity: isLoading ? 0.7 : 1,
                                 cursor: isLoading ? 'not-allowed' : 'pointer'
                             }}

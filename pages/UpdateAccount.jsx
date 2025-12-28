@@ -73,14 +73,10 @@ const UpdateAccount = () => {
             accountType: originalData.accountType, 
             currency: originalData.currency,
             
-            // 🔥 SỬA QUAN TRỌNG TẠI ĐÂY:
-            // Lấy đúng số dư hiện tại (balance) để gửi lại.
-            // Nếu balance bằng 0 hoặc null, ta gửi 1 (để qua mặt @Positive nếu cần), 
-            // nhưng tốt nhất là gửi đúng số dư thực.
             initialDeposit: originalData.balance > 0 ? originalData.balance : 1 
         };
 
-        console.log("📦 Gửi payload chuẩn:", payload);
+        console.log("Gửi payload chuẩn:", payload);
 
       const response = await bankingService.updateAccount(user.id, payload);
       
@@ -94,12 +90,12 @@ const UpdateAccount = () => {
           accountName: updatedAccount.accountName
       }));
 
-      showSuccess("✅ Cập nhật tên tài khoản thành công!");
+      showSuccess("Cập nhật tên tài khoản thành công!");
       navigate('/dashboard'); // Hoặc quay lại Settings
 
     } catch (error) {
       console.error("Lỗi update:", error);
-      showError("❌ Cập nhật thất bại: " + (error.response?.data?.message || "Lỗi hệ thống"));
+      showError("Cập nhật thất bại: " + (error.response?.data?.message || "Lỗi hệ thống"));
     } finally {
       hideLoading();
     }

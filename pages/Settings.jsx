@@ -11,27 +11,22 @@ const Settings = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
   
-  // Lấy thông tin user cơ bản
   const user = JSON.parse(localStorage.getItem('user')) || {};
   
-  // --- STATE CÀI ĐẶT ---
-  // 1. Avatar: Lấy từ LocalStorage nếu có, không thì dùng ảnh mặc định
   const [avatar, setAvatar] = useState(localStorage.getItem('user_avatar') || 'https://via.placeholder.com/150');
   
-  // 2. Giao diện (Dark Mode): false = Sáng, true = Tối
+
   const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('app_theme') === 'dark');
   
-  // 3. Ngôn ngữ
+
   const [language, setLanguage] = useState(localStorage.getItem('app_language') || 'vi');
 
-  // 4. Các State Mock (Bảo mật)
   const [biometricEnabled, setBiometricEnabled] = useState(true);
   const [fingerprintEnabled, setFingerprintEnabled] = useState(false);
   const { notification, showFeature, showError, showSuccess, closeNotification } = useNotification();
 
-  // --- HÀM XỬ LÝ ---
+
   
-  // Xử lý đổi Avatar
   const handleAvatarChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -39,7 +34,6 @@ const Settings = () => {
       reader.onload = (e) => {
         const newAvatar = e.target.result;
         setAvatar(newAvatar);
-        // Lưu vào LocalStorage để các trang khác (như Dashboard) có thể dùng chung
         localStorage.setItem('user_avatar', newAvatar);
         showSuccess("✅ Đổi ảnh đại diện thành công!");
       };
@@ -47,12 +41,12 @@ const Settings = () => {
     }
   };
 
-  // Xử lý đổi Giao diện (Theme)
+
   const toggleTheme = () => {
     const newTheme = !isDarkMode ? 'dark' : 'light';
     setIsDarkMode(!isDarkMode);
     localStorage.setItem('app_theme', newTheme);
-    // Thực tế bạn sẽ cần áp dụng class CSS vào body hoặc context, ở đây mình làm demo đổi màu nền
+
   };
 
   // Xử lý đổi Ngôn ngữ
@@ -75,7 +69,7 @@ const Settings = () => {
     });
   };
 
-  // --- STYLES (Kế thừa phong cách Mobile Center của Dashboard) ---
+
   const styles = {
     outerWrapper: {
       minHeight: '100vh', width: '100%',

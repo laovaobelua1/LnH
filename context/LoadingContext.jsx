@@ -4,7 +4,7 @@ import LoadingSpinner from '../components/LoadingSpinner'; // Import component S
 // 1. Tạo Context
 const LoadingContext = createContext();
 
-// 2. Tạo Provider (Nhà cung cấp)
+// 2. Tạo Provider
 export const LoadingProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [loadingText, setLoadingText] = useState('Đang xử lý...');
@@ -29,7 +29,7 @@ export const LoadingProvider = ({ children }) => {
     );
 };
 
-// 3. Tạo Hook để các file khác dễ dàng gọi (Custom Hook)
+// 3. Tạo Hook 
 export const useGlobalLoading = () => {
     return useContext(LoadingContext);
 };

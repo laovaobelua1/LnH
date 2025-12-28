@@ -24,7 +24,7 @@ const Register = () => {
   const { showLoading, hideLoading, isLoading } = useGlobalLoading();
   const [isDirty, setIsDirty] = useState(false);
 
-  // --- LOGIC (GIỮ NGUYÊN) ---
+
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (isDirty) {
@@ -266,7 +266,6 @@ const Register = () => {
                 cursor: isLoading ? 'not-allowed' : 'pointer'
               }}
             >
-              {/* 4. Giữ nguyên text, không cần đổi thành "Đang khởi tạo..." nữa */}
               ✨ TẠO TÀI KHOẢN NGAY
             </button>
           </form>

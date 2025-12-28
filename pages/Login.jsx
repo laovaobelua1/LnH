@@ -10,18 +10,18 @@ const Login = () => {
   const navigate = useNavigate();
   const { notification, showFeature, showError, closeNotification } = useNotification();
   const { showLoading, hideLoading, isLoading } = useGlobalLoading();
-  // --- STATE QUẢN LÝ ---
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState(false);
 
-  // --- 1. TỰ ĐỘNG DỌN DẸP KHI VÀO TRANG ---
+
   useEffect(() => {
-    localStorage.clear(); // Xóa sạch token cũ để tránh lỗi 401 giả
+    localStorage.clear(); 
   }, []);
 
-  // --- 2. XỬ LÝ ĐĂNG NHẬP ---
+
   const handleLogin = async (e) => {
     e.preventDefault();
     showLoading("Đang đăng nhập...")
@@ -31,7 +31,7 @@ const Login = () => {
       const response = await bankingService.login(username, password);
       const { id, jwtToken, roles, username: resUser } = response.data;
 
-      // Xử lý chuỗi Token (Nếu backend trả về dạng cookie string)
+
       let cleanToken = jwtToken;
       if (jwtToken && jwtToken.includes(';')) {
           const cookiePart = jwtToken.split(';')[0];
@@ -40,7 +40,7 @@ const Login = () => {
       }
       localStorage.setItem('jwtToken', cleanToken);
 
-      // Kiểm tra Account Info
+     
       try {
         const accResponse = await bankingService.getAccountInfo(id);
         localStorage.setItem('user', JSON.stringify({ 
@@ -54,8 +54,8 @@ const Login = () => {
 
     } catch (error) {
       setLoginError(true);
-      if (error.response?.status === 401) showError("❌ Sai tên đăng nhập hoặc mật khẩu!");
-      else showError("❌ Lỗi: " + (error.message || "Vui lòng thử lại"));
+      if (error.response?.status === 401) showError("Sai tên đăng nhập hoặc mật khẩu!");
+      else showError("Lỗi: " + (error.message || "Vui lòng thử lại"));
     } finally {
       hideLoading()
     }
@@ -96,7 +96,7 @@ const Login = () => {
       margin: 0 
     },
     
-    // Input được bọc trong group để có icon
+
     inputGroup: { position: 'relative', marginBottom: '15px' },
     inputIcon: {
         position: 'absolute', 

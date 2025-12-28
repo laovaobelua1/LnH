@@ -33,7 +33,6 @@ const Dashboard = () => {
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // --- LOGIC API & WEBSOCKET (Giữ nguyên) ---
   useEffect(() => {
     if (!user) { navigate('/'); return; }
     const fetchData = async () => {
@@ -57,9 +56,7 @@ const Dashboard = () => {
     setUnreadCount(count);
   }, [notifications]);
 
-// --- 2. KẾT NỐI WEBSOCKET QUA STOMP (MỚI) ---
   useEffect(() => {
-    // Chỉ kết nối khi đã có thông tin tài khoản (để lấy Số TK subscribe)
     if (!account?.accountNumber) return;
 
     if (stompClient.current && stompClient.current.active) {
@@ -69,42 +66,35 @@ const Dashboard = () => {
     const token = localStorage.getItem('jwtToken');
     if (!token) return;
 
-    //console.log("🚀 Đang khởi tạo STOMP Client...");
-
     const client = new Client({
         brokerURL: 'wss://banking.duchuysaidepchieu.id.vn/ws/websocket',
         
-        // 🔥 QUAN TRỌNG: Trình duyệt không cho gửi header lúc handshake như Node.js
-        // Nên ta gửi Token qua connectHeaders của giao thức STOMP
         connectHeaders: {
             Authorization: `Bearer ${token}` 
         },
         
-        reconnectDelay: 5000, // Tự kết nối lại sau 5s nếu mất mạng
+        reconnectDelay: 5000, 
         
         onConnect: () => {
-            console.log('✅ Đã kết nối STOMP thành công!');
+            console.log('Đã kết nối STOMP thành công!');
             
             // Subscribe vào đúng kênh riêng của User
             // Topic: /queue/notifications/{accountNumber}
             const topic = `/queue/notifications/${account.accountNumber}`;
-            console.log(`📡 Đang lắng nghe tại: ${topic}`);
+            console.log(`Đang lắng nghe tại: ${topic}`);
 
             client.subscribe(topic, (message) => {
                 if (message.body) {
                     const newNotif = JSON.parse(message.body);
-                    console.log("🔔 Có thông báo mới:", newNotif);
+                    console.log("Có thông báo mới:", newNotif);
 
-                    // 1. Cập nhật State
                     setNotifications((prev) => [newNotif, ...prev]);
 
-                    // 2. 🔥 CẬP NHẬT SỐ DƯ NGAY LẬP TỨC (REAL-TIME) 🔥
-                    // Kiểm tra xem Backend gửi về key tên là gì (balance, newBalance, v.v...)
                     const updatedBalance = newNotif.balance;
                     alert("Đã cập nhật chưa nhỉ")
 
                     if (updatedBalance !== undefined && updatedBalance !== null) {
-                        console.log("💰 Cập nhật nóng số dư:", updatedBalance);
+                        console.log("Cập nhật nóng số dư:", updatedBalance);
                         
                         
                         setAccount((prevAccount) => ({
@@ -112,9 +102,7 @@ const Dashboard = () => {
                             balance: updatedBalance // Chỉ thay đổi số dư
                         }));
                     }
-                // 🔥 PHÁT ÂM THANH (Sử dụng biến audioPlayer duy nhất) 🔥
                     try {
-                        // Reset thời gian để phát lại được ngay
                         audioPlayer.currentTime = 0;
                         
                         const playPromise = audioPlayer.play();
@@ -132,21 +120,19 @@ const Dashboard = () => {
         },
         
         onStompError: (frame) => {
-            console.error('❌ Lỗi STOMP:', frame.headers['message']);
+            console.error('Lỗi STOMP:', frame.headers['message']);
             console.error('Chi tiết:', frame.body);
         },
 
         onWebSocketClose: () => {
-            //console.log('⚠️ Mất kết nối WebSocket.');
+            //console.log('Mất kết nối WebSocket.');
             
         }
     });
 
-    // Kích hoạt kết nối
     client.activate();
     stompClient.current = client;
 
-    // Dọn dẹp khi thoát trang
     return () => {
         if (stompClient.current) {
             stompClient.current.deactivate();
@@ -160,8 +146,6 @@ const Dashboard = () => {
     };
   }, [account?.accountNumber, audioPlayer]);
 
-// Logout is now handled by Layout component
-// STOMP cleanup is handled in useEffect cleanup
 
   const handleMarkAsRead = async (notif) => {
     if (notif.isRead) return;
@@ -171,7 +155,7 @@ const Dashboard = () => {
     } catch (error) { console.error(error); }
   };
 
-  const scanQRFromImage = (file) => { /* ... Logic scan ảnh (Giữ nguyên) ... */
+  const scanQRFromImage = (file) => { 
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -204,32 +188,30 @@ const Dashboard = () => {
                 setTimeout(() => reject(new Error("Request timed out")), 5000)
             );
 
-            // Đua giữa quét QR và Timeout
             rawQrContent = await Promise.race([
                 scanQRFromImage(file), 
                 timeoutPromise
             ]);
 
-            // Nếu code chạy đến đây nghĩa là quét QR xong trước 5s
             console.log("Kết quả:", rawQrContent);
             hideLoading()
 
         } catch (error) {
             hideLoading()
             if (error.message === "Request timed out") {
-                showError("❌ Quét QR quá lâu, vui lòng thử lại!");
+                showError("Quét QR quá lâu, vui lòng thử lại!");
             } else {
-                showError("❌ Lỗi khi quét QR: " + error.message);
+                showError("Lỗi khi quét QR: " + error.message);
             }
         }
         let qrData;
-        try { qrData = JSON.parse(rawQrContent); } catch(err) {showError("❌ QR sai định dạng!"); return; }
+        try { qrData = JSON.parse(rawQrContent); } catch(err) {showError("QR sai định dạng!"); return; }
 
-        if (qrData.bankCode !== "HUY_BANK_CORE") { showError("⛔ Ngân hàng không hỗ trợ!"); return; }
-        if (!qrData.accountNumber) { showError("❌ Thiếu số tài khoản!"); return; }
+        if (qrData.bankCode !== "HUY_BANK_CORE") { showError("Ngân hàng không hỗ trợ!"); return; }
+        if (!qrData.accountNumber) { showError("Thiếu số tài khoản!"); return; }
 
         navigate('/transfer', { state: { scannedAccount: qrData.accountNumber } });
-      } catch (error) { showError("❌ Ảnh không hợp lệ."); }
+      } catch (error) { showError("Ảnh không hợp lệ."); }
     }
   };
 
@@ -426,7 +408,6 @@ return (
                 {!account ? (
                         <span style={{fontSize: '16px', color: '#999'}}>⏳ Đang cập nhật...</span>
                     ) : (
-                        /* Nếu có dữ liệu -> Kiểm tra xem có đang ẩn số dư không */
                         showAccountDetails 
                             ? `${account.balance.toLocaleString()} ${account.currency}` 
                             : '******'
@@ -528,7 +509,6 @@ return (
         )}
       </div>
 
-      {/* GlobalModal */}
       <GlobalModal 
           config={notification} 
           onClose={closeNotification} 
