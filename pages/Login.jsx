@@ -61,49 +61,63 @@ const Login = () => {
     }
   };
 
-  // --- STYLES "RỰC RỠ & BẮT MẮT" ---
+  // --- RESPONSIVE WEB STYLES ---
   const styles = {
-    wrapper: {
-      minHeight: '100vh', width: '100%',
-      // Gradient nền động: Xanh dương - Tím - Hồng
-      background: 'linear-gradient(-45deg, #00c6ff, #0072ff, #9D50BB, #6E48AA)',
-      backgroundSize: '400% 400%',
-      animation: 'gradientBG 15s ease infinite',
-      display: 'flex', justifyContent: 'center', alignItems: 'center',
-      fontFamily: "'Segoe UI', Roboto, sans-serif", padding: '20px'
+    pageWrapper: {
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      padding: 'clamp(1rem, 3vw, 2rem)',
+      fontFamily: "'Segoe UI', Roboto, sans-serif",
     },
-    glassCard: {
-      width: '100%', maxWidth: '400px',
-      // Hiệu ứng kính mờ
-      background: 'rgba(255, 255, 255, 0.85)',
-      backdropFilter: 'blur(20px)',
-      borderRadius: '24px',
-      border: '1px solid rgba(255, 255, 255, 0.6)',
-      boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.3)',
-      padding: '40px 30px',
-      display: 'flex', flexDirection: 'column', gap: '20px'
+    container: {
+      width: '100%',
+      maxWidth: 'min(450px, 90vw)',
+      backgroundColor: '#ffffff',
+      borderRadius: 'clamp(12px, 2vw, 16px)',
+      boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
+      padding: 'clamp(2rem, 5vw, 3rem)',
     },
-    header: { textAlign: 'center' },
+    header: { 
+      textAlign: 'center',
+      marginBottom: '30px',
+    },
     title: {
-      fontSize: '32px', fontWeight: '800', margin: '0 0 5px 0',
-      background: 'linear-gradient(45deg, #0072ff, #00c6ff)',
-      WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+      fontSize: 'clamp(22px, 4vw, 28px)', 
+      fontWeight: '700', 
+      margin: '0 0 clamp(0.5rem, 1.5vw, 0.75rem) 0',
+      color: '#333',
     },
-    subtitle: { fontSize: '14px', color: '#666', margin: 0 },
+    subtitle: { 
+      fontSize: 'clamp(12px, 2.5vw, 14px)', 
+      color: '#666', 
+      margin: 0 
+    },
     
     // Input được bọc trong group để có icon
     inputGroup: { position: 'relative', marginBottom: '15px' },
     inputIcon: {
-        position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)',
-        fontSize: '18px', color: '#0072ff', opacity: 0.7
+        position: 'absolute', 
+        left: 'clamp(0.75rem, 2vw, 1rem)', 
+        top: '50%', 
+        transform: 'translateY(-50%)',
+        fontSize: 'clamp(16px, 3vw, 18px)', 
+        color: '#0072ff', 
+        opacity: 0.7
     },
     input: {
-      width: '100%', padding: '14px 14px 14px 45px', // Padding trái né icon
-      borderRadius: '12px', border: '1px solid #e0e0e0',
-      fontSize: '15px', outline: 'none',
-      background: 'rgba(255,255,255,0.8)',
-      transition: 'all 0.3s', boxSizing: 'border-box',
-      color: '#213547'
+      width: '100%', 
+      padding: 'clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem) clamp(2.5rem, 6vw, 3rem)',
+      borderRadius: 'clamp(6px, 1.5vw, 8px)', 
+      border: '1px solid #e0e0e0',
+      fontSize: 'clamp(14px, 2.5vw, 15px)', 
+      outline: 'none',
+      background: '#ffffff',
+      transition: 'all 0.3s', 
+      boxSizing: 'border-box',
+      color: '#333'
     },
     eyeIcon: {
       position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)',
@@ -112,18 +126,30 @@ const Login = () => {
     
     button: {
       width: '100%', 
-      padding: '15px', 
-      marginTop: '10px',
-      background: 'linear-gradient(to right, #00c6ff, #0072ff)',
+      padding: 'clamp(0.75rem, 2vw, 1rem)', 
+      marginTop: 'clamp(0.5rem, 1.5vw, 0.75rem)',
+      background: 'linear-gradient(to right, #667eea, #764ba2)',
       color: 'white', 
       border: 'none', 
-      borderRadius: '12px',
-      fontSize: '16px', 
-      fontWeight: 'bold', 
-      cursor: 'pointer', // Để mặc định là pointer
-      boxShadow: '0 5px 15px rgba(0, 114, 255, 0.4)',
-      transition: 'all 0.2s', // Đổi transform thành all để mượt cả opacity
-      opacity: 1 // Để mặc định là 1
+      borderRadius: 'clamp(6px, 1.5vw, 8px)',
+      fontSize: 'clamp(14px, 2.5vw, 16px)', 
+      fontWeight: '600', 
+      cursor: 'pointer',
+      boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+      transition: 'all 0.3s',
+    },
+    devButton: {
+      width: '100%', 
+      padding: '12px', 
+      marginTop: '10px',
+      background: '#f0f0f0',
+      color: '#666', 
+      border: '1px solid #ddd', 
+      borderRadius: '8px',
+      fontSize: '14px', 
+      fontWeight: '500', 
+      cursor: 'pointer',
+      transition: 'all 0.3s',
     },
 
     errorBox: {
@@ -136,33 +162,43 @@ const Login = () => {
       borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '20px'
     },
     link: {
-      color: '#0072ff', fontWeight: 'bold', textDecoration: 'none', marginLeft: '5px',
-      borderBottom: '1px dashed #0072ff'
+      color: '#667eea', fontWeight: '600', textDecoration: 'none', marginLeft: '5px',
+      borderBottom: '1px dashed #667eea'
     }
   };
 
   return (
     <>
-      {/* Animation Global */}
+      {/* Global Styles */}
       <style>{`
-        @keyframes gradientBG {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
+        * {
+          box-sizing: border-box;
+        }
+        .login-container {
+          width: min(100%, 450px) !important;
+          padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 2.5rem) !important;
+        }
+        @media (max-width: 480px) {
+          .login-container {
+            padding: clamp(1.5rem, 4vw, 2rem) clamp(1rem, 3vw, 1.5rem) !important;
+          }
         }
         input:focus {
-            border-color: #0072ff !important;
-            box-shadow: 0 0 0 3px rgba(0, 114, 255, 0.1);
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
             background: white !important;
+        }
+        button:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
         }
       `}</style>
 
-      <div style={styles.wrapper}>
-        <div style={styles.glassCard}>
-          
+      <div style={styles.pageWrapper}>
+        <div className="login-container" style={styles.container}>
           {/* Header */}
           <div style={styles.header}>
-            <div style={{fontSize: '40px', marginBottom: '10px'}}>🔐</div>
+            <div style={{fontSize: '48px', marginBottom: '15px'}}>🔐</div>
             <h2 style={styles.title}>Welcome Back</h2>
             <p style={styles.subtitle}>Đăng nhập để tiếp tục giao dịch</p>
           </div>
@@ -199,8 +235,8 @@ const Login = () => {
               </button>
             </div>
 
-            <div style={{textAlign: 'right', marginBottom: '15px'}}>
-                <span style={{fontSize: '12px', color: '#0072ff', cursor: 'pointer'}}>Quên mật khẩu?</span>
+            <div style={{textAlign: 'right', marginBottom: '20px'}}>
+                <span style={{fontSize: '13px', color: '#667eea', cursor: 'pointer'}}>Quên mật khẩu?</span>
             </div>
 
             {/* Submit Button */}
@@ -216,6 +252,23 @@ const Login = () => {
               ĐĂNG NHẬP NGAY ➜
             </button>
           </form>
+
+          {/* Dev Quick Access Button */}
+          <button 
+            type="button"
+            onClick={() => {
+              localStorage.setItem('user', JSON.stringify({
+                id: 1,
+                username: 'demo',
+                accountName: 'Demo User',
+                roles: ['USER']
+              }));
+              navigate('/dashboard');
+            }}
+            style={styles.devButton}
+          >
+            🚀 Vào nhanh (Dev)
+          </button>
           
           {/* Footer */}
           <div style={styles.footer}>
@@ -224,13 +277,13 @@ const Login = () => {
               Tạo tài khoản miễn phí
             </Link>
           </div>
-        {/* Đặt GlobalModal ở cuối cùng */}
-        <GlobalModal 
-            config={notification} 
-            onClose={closeNotification} 
-            styles={commonStyles} 
-        />
 
+          {/* GlobalModal */}
+          <GlobalModal 
+              config={notification} 
+              onClose={closeNotification} 
+              styles={commonStyles} 
+          />
         </div>
       </div>
     </>

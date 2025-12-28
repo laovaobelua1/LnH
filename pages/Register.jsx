@@ -81,43 +81,35 @@ const Register = () => {
   };
 
   const styles = {
-    wrapper: {
+    pageWrapper: {
       minHeight: '100vh',
-      width: '100%',
-      background: 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)',
-      backgroundSize: '400% 400%',
-      animation: 'gradientBG 15s ease infinite',
       display: 'flex',
-      justifyContent: 'center',
       alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      padding: 'clamp(1rem, 3vw, 2rem)',
       fontFamily: "'Segoe UI', Roboto, sans-serif",
-      padding: '20px'
     },
-    glassCard: {
+    container: {
       width: '100%',
-      maxWidth: '420px',
-      // Hiệu ứng kính mờ 
-      background: 'rgba(255, 255, 255, 0.85)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
-      borderRadius: '24px',
-      border: '1px solid rgba(255, 255, 255, 0.5)',
-      boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
-      padding: '40px 30px',
-      position: 'relative',
-      overflow: 'hidden'
+      maxWidth: 'min(500px, 90vw)',
+      backgroundColor: '#ffffff',
+      borderRadius: 'clamp(12px, 2vw, 16px)',
+      boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
+      padding: 'clamp(2rem, 5vw, 3rem)',
     },
     headerTitle: {
       textAlign: 'center',
-      fontSize: '28px',
-      fontWeight: '800',
-      background: 'linear-gradient(45deg, #FF512F 0%, #DD2476 100%)',
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      marginBottom: '5px'
+      fontSize: 'clamp(22px, 4vw, 28px)',
+      fontWeight: '700',
+      color: '#333',
+      marginBottom: 'clamp(0.5rem, 1.5vw, 0.75rem)'
     },
     subTitle: {
-      textAlign: 'center', color: '#666', fontSize: '14px', marginBottom: '25px'
+      textAlign: 'center', 
+      color: '#666', 
+      fontSize: 'clamp(12px, 2.5vw, 14px)', 
+      marginBottom: 'clamp(1.5rem, 4vw, 2.5rem)'
     },
     inputGroup: {
       position: 'relative', marginBottom: '15px',
@@ -131,10 +123,14 @@ const Register = () => {
       fontSize: '18px', opacity: 0.5
     },
     input: {
-      width: '100%', padding: '14px 14px 14px 45px',
-      border: 'none', background: 'transparent',
-      fontSize: '15px', outline: 'none', color: '#333',
-      borderRadius: '12px'
+      width: '100%', 
+      padding: 'clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem) clamp(2.5rem, 6vw, 3rem)',
+      border: 'none', 
+      background: 'transparent',
+      fontSize: 'clamp(14px, 2.5vw, 15px)', 
+      outline: 'none', 
+      color: '#333',
+      borderRadius: 'clamp(8px, 1.5vw, 12px)'
     },
     eyeBtn: {
       position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)',
@@ -143,20 +139,17 @@ const Register = () => {
 // Trong object styles
     submitBtn: {
         width: '100%', 
-        padding: '15px', 
-        marginTop: '10px',
+        padding: 'clamp(0.75rem, 2vw, 1rem)', 
+        marginTop: 'clamp(0.5rem, 1.5vw, 0.75rem)',
         border: 'none', 
-        borderRadius: '12px',
-        // Gradient nút bấm
-        background: 'linear-gradient(to right, #DA22FF 0%, #9733EE 51%, #DA22FF 100%)',
-        backgroundSize: '200% auto',
+        borderRadius: 'clamp(6px, 1.5vw, 8px)',
+        background: 'linear-gradient(to right, #f093fb, #f5576c)',
         color: 'white', 
-        fontSize: '16px', 
-        fontWeight: 'bold',
-        cursor: 'pointer', // Để mặc định là pointer
-        boxShadow: '0 10px 20px rgba(218, 34, 255, 0.3)',
-        transition: '0.5s',
-        opacity: 1 // Để mặc định là 1 (hiện rõ)
+        fontSize: 'clamp(14px, 2.5vw, 16px)', 
+        fontWeight: '600',
+        cursor: 'pointer',
+        boxShadow: '0 4px 12px rgba(245, 87, 108, 0.4)',
+        transition: 'all 0.3s',
     },
 
     cancelBtn: {
@@ -175,24 +168,40 @@ const Register = () => {
 
   return (
     <>
-      {/* CSS Animation Global */}
+      {/* Global Styles */}
       <style>
         {`
-          @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+          * {
+            box-sizing: border-box;
           }
-          input:focus { box-shadow: 0 0 0 2px rgba(221, 36, 118, 0.2); }
+          .register-container {
+            width: min(100%, 500px) !important;
+            padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 2.5rem) !important;
+          }
+          @media (max-width: 480px) {
+            .register-container {
+              padding: clamp(1.5rem, 4vw, 2rem) clamp(1rem, 3vw, 1.5rem) !important;
+            }
+          }
+          input:focus { 
+            box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+            border-color: #f5576c !important;
+          }
+          button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(245, 87, 108, 0.5);
+          }
         `}
       </style>
 
-      <div style={styles.wrapper}>
-        <div style={styles.glassCard}>
-          
+      <div style={styles.pageWrapper}>
+        <div className="register-container" style={styles.container}>
           {/* Header */}
-          <h2 style={styles.headerTitle}>Đăng Ký Tài Khoản</h2>
-          <p style={styles.subTitle}>Tham gia cùng chúng tôi - Hoàn toàn miễn phí 🚀</p>
+          <div style={{textAlign: 'center', marginBottom: '30px'}}>
+            <div style={{fontSize: '48px', marginBottom: '15px'}}>🚀</div>
+            <h2 style={styles.headerTitle}>Đăng Ký Tài Khoản</h2>
+            <p style={styles.subTitle}>Tham gia cùng chúng tôi - Hoàn toàn miễn phí</p>
+          </div>
 
           {errorMessage && (
             <div style={styles.errorBox}>
@@ -263,18 +272,17 @@ const Register = () => {
           </form>
 
 
-          <div style={{marginTop: '20px', textAlign: 'center', fontSize: '13px', color: '#666'}}>
-             Đã là thành viên? <span onClick={handleGoBack} style={{color: '#DD2476', fontWeight: 'bold', cursor: 'pointer', textDecoration: 'underline'}}>Đăng nhập tại đây</span>
+          <div style={{marginTop: '25px', textAlign: 'center', fontSize: '14px', color: '#666'}}>
+             Đã là thành viên? <span onClick={handleGoBack} style={{color: '#f5576c', fontWeight: '600', cursor: 'pointer', textDecoration: 'underline'}}>Đăng nhập tại đây</span>
           </div>
           
+          {/* GlobalModal */}
+          <GlobalModal 
+              config={notification} 
+              onClose={closeNotification} 
+              styles={commonStyles} 
+          />
         </div>
-
-        {/* Đặt GlobalModal ở cuối cùng */}
-        <GlobalModal 
-            config={notification} 
-            onClose={closeNotification} 
-            styles={commonStyles} 
-        />
       </div>
     </>
   );

@@ -2,9 +2,10 @@ import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { bankingService } from '../services/bankingService';
 import { useNavigate } from 'react-router-dom';
 import { commonStyles } from '../styles/commonStyles';
-import GlobalModal from '../components/GlobalModal'; // Import Component
-import { useNotification } from '../utils/useNotification'; // Import Hook
-import { useGlobalLoading } from '../context/LoadingContext'; // Import Hook
+import GlobalModal from '../components/GlobalModal';
+import Layout from '../components/Layout';
+import { useNotification } from '../utils/useNotification';
+import { useGlobalLoading } from '../context/LoadingContext';
 import jsQR from 'jsqr';
 import { Client } from '@stomp/stompjs';
 
@@ -149,32 +150,18 @@ const Dashboard = () => {
     return () => {
         if (stompClient.current) {
             stompClient.current.deactivate();
-            stompClient.current = null; // Reset ref
+            stompClient.current = null;
+        }
+        // Cleanup audio
+        if (audioPlayer) {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
         }
     };
-  }, [account?.accountNumber, audioPlayer]); // Chạy lại khi có thông tin account
+  }, [account?.accountNumber, audioPlayer]);
 
-const handleLogout = () => {
-    // 1. Ngắt kết nối STOMP
-    if (stompClient.current) {
-        stompClient.current.deactivate(); 
-        console.log("Đã ngắt kết nối STOMP");
-    }
-
-    // 2. Dừng âm thanh (SỬA LẠI ĐOẠN NÀY)
-    // Dùng trực tiếp audioPlayer, không dùng audioRef.current
-    if (audioPlayer) {
-        audioPlayer.pause();        // Tạm dừng
-        audioPlayer.currentTime = 0; // Tua về đầu
-    }
-
-    // 3. Xóa dữ liệu phiên làm việc
-    bankingService.logout(); 
-    localStorage.clear(); 
-
-    // 4. Chuyển hướng về Login
-    navigate('/');
-};
+// Logout is now handled by Layout component
+// STOMP cleanup is handled in useEffect cleanup
 
   const handleMarkAsRead = async (notif) => {
     if (notif.isRead) return;
@@ -209,7 +196,7 @@ const handleLogout = () => {
     if (file) {
       event.target.value = '';
       try {
-        showLoading("📸 Đang phân tích mã QR..."); // Đặt nội dung
+        showLoading("📸 Đang phân tích mã QR..."); 
         let rawQrContent
         try {
             // Thời gian giới hạn: 5000ms (5 giây)
@@ -266,60 +253,30 @@ const handleLogout = () => {
     { name: 'Đổi quà', icon: '🎁', action: () => showFeature('Đổi điểm thưởng'), bg: '#fff8e1', color: '#ff6f00' },
   ];
 
-  // --- STYLES ĐÃ ĐIỀU CHỈNH CĂN GIỮA ---
-// --- CSS STYLES (CĂN GIỮA HOÀN CHỈNH) ---
+  // --- RESPONSIVE WEB STYLES ---
   const styles = {
-    // 1. Lớp nền bao ngoài cùng (Màu xám, căn giữa nội dung)
-    outerWrapper: {
-      display: 'flex',            // 1. Bật chế độ Flex
-      justifyContent: 'center',   // 2. Ép con cái vào giữa
-      width: '100%',              // 3. QUAN TRỌNG: Mở rộng khung cha ra hết màn hình
-      minHeight: '100vh',         // 4. Cao hết màn hình
-      
-      // --- Các dòng trang trí ---
-      backgroundColor: 'rgba(205, 34, 83, 1)ff', 
-      paddingTop: '20px',
-      boxSizing: 'border-box',
-    },
-
-    // 2. Khung App (Màu trắng, giới hạn chiều rộng)
     container: {
-      margin: '0 auto',
-      width: '100%',
-      maxWidth: '480px',          // QUAN TRỌNG: Giới hạn chiều rộng như điện thoại
-      minHeight: '90vh',          // Chiều cao tối thiểu
-      backgroundColor: '#ffffffff',
       fontFamily: "'Segoe UI', Roboto, sans-serif",
-      position: 'relative',       // Để các thành phần con absolute bám theo
-      borderRadius: '30px',       // Bo góc cho giống điện thoại
-      boxShadow: '0 0 20px rgba(0,0,0,0.1)', // Đổ bóng nổi bật
-      overflow: 'hidden',         // Cắt các phần thừa
-      paddingBottom: '90px',      // Chừa chỗ cho menu dưới
     },
-
-    // 3. Header
-    header: {
-      background: 'linear-gradient(135deg, #007bff, #0056b3)',
-      padding: '30px 25px 80px 25px',
+    welcomeSection: {
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      borderRadius: 'clamp(8px, 1.5vw, 12px)',
+      padding: 'clamp(1.5rem, 4vw, 2.5rem)',
       color: 'white',
+      marginBottom: 'clamp(1.5rem, 4vw, 2.5rem)',
     },
-
-    // 4. Card Tài khoản
     card: {
       backgroundColor: 'white',
-      margin: '-50px 20px 20px 20px', // Đẩy lên đè lên header
-      padding: '20px',
-      borderRadius: '20px',
-      boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-      position: 'relative',
+      padding: 'clamp(1.25rem, 3vw, 2rem)',
+      borderRadius: 'clamp(8px, 1.5vw, 12px)',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+      marginBottom: 'clamp(1.5rem, 4vw, 2.5rem)',
     },
-
-    // 5. Grid tiện ích
     gridContainer: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(4, 1fr)', // 4 cột đều nhau
-      gap: '20px 10px',
-      padding: '0 20px',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(min(120px, 25vw), 1fr))',
+      gap: 'clamp(1rem, 3vw, 1.5rem)',
+      marginBottom: 'clamp(1.5rem, 4vw, 2.5rem)',
     },
     gridItem: {
       display: 'flex',
@@ -327,147 +284,145 @@ const handleLogout = () => {
       alignItems: 'center',
       textAlign: 'center',
       cursor: 'pointer',
+      padding: 'clamp(0.75rem, 2vw, 1rem)',
+      borderRadius: 'clamp(8px, 1.5vw, 12px)',
+      transition: 'all 0.3s',
+      backgroundColor: 'white',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     },
     iconBox: {
-      width: '50px',
-      height: '50px',
-      borderRadius: '18px',
+      width: 'clamp(50px, 8vw, 60px)',
+      height: 'clamp(50px, 8vw, 60px)',
+      borderRadius: 'clamp(8px, 1.5vw, 12px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontSize: '24px',
-      marginBottom: '8px',
+      fontSize: 'clamp(22px, 4vw, 28px)',
+      marginBottom: 'clamp(0.5rem, 1.5vw, 0.75rem)',
     },
     menuLabel: {
-      fontSize: '11px',
+      fontSize: 'clamp(11px, 2vw, 13px)',
       color: '#555',
       fontWeight: '600',
     },
-
-    // 6. Banner quảng cáo
     banner: {
-      margin: '25px 20px',
-      borderRadius: '20px',
-      height: '100px',
+      borderRadius: 'clamp(8px, 1.5vw, 12px)',
+      padding: 'clamp(1.25rem, 3vw, 2rem)',
       background: 'linear-gradient(135deg, #ff9966, #ff5e62)',
       display: 'flex',
       alignItems: 'center',
-      padding: '0 25px',
+      justifyContent: 'space-between',
       color: 'white',
-      boxShadow: '0 8px 20px rgba(255, 94, 98, 0.3)',
-      position: 'relative',
-      overflow: 'hidden',
+      boxShadow: '0 4px 12px rgba(255, 94, 98, 0.3)',
+      marginBottom: 'clamp(1.5rem, 4vw, 2.5rem)',
     },
-
-    // 7. Bottom Bar (Menu dưới cùng)
-    bottomBar: {
-      position: 'fixed',          // Cố định để luôn nổi
-      bottom: '25px',             // Cách đáy màn hình một chút
-      left: 0, 
-      right: 0,                   // Kết hợp left 0 right 0 để căng ngang
-      margin: '0 auto',           // Tự động căn giữa
-      width: '100%',
-      maxWidth: '480px',          // Rộng bằng đúng Container
-      height: '75px',
-      backgroundColor: 'rgba(255, 255, 255, 0.95)',
-      backdropFilter: 'blur(10px)',
-      borderRadius: '0 0 30px 30px', // Bo tròn đáy khớp với container
-      boxShadow: '0 -5px 20px rgba(0,0,0,0.05)',
-      display: 'flex',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      zIndex: 1000,
-    },
-    navItem: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      color: '#999',
-      fontSize: '10px',
-      cursor: 'pointer',
-      width: '60px',
-    },
-    scanBtn: {
-      width: '65px',
-      height: '65px',
+    scanButton: {
+      padding: 'clamp(0.75rem, 2vw, 1rem) clamp(1.25rem, 3vw, 2rem)',
       background: 'linear-gradient(135deg, #28a745, #218838)',
-      borderRadius: '50%',
+      color: 'white',
+      border: 'none',
+      borderRadius: 'clamp(6px, 1.5vw, 8px)',
+      fontSize: 'clamp(14px, 2.5vw, 16px)',
+      fontWeight: '600',
+      cursor: 'pointer',
+      boxShadow: '0 4px 12px rgba(40, 167, 69, 0.4)',
+      marginBottom: 'clamp(1.5rem, 4vw, 2.5rem)',
+      width: '100%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontSize: '28px',
-      color: 'white',
-      boxShadow: '0 8px 20px rgba(40, 167, 69, 0.4)',
-      transform: 'translateY(-30px)', // Nổi lên trên
-      border: '6px solid #f2f4f6',
-      cursor: 'pointer',
+      gap: 'clamp(0.5rem, 1.5vw, 0.75rem)',
     },
-    
-    // Panel thông báo
+    notifButton: {
+      position: 'fixed',
+      bottom: 'clamp(1rem, 3vw, 2rem)',
+      right: 'clamp(1rem, 3vw, 2rem)',
+      width: 'clamp(50px, 8vw, 60px)',
+      height: 'clamp(50px, 8vw, 60px)',
+      borderRadius: '50%',
+      background: 'linear-gradient(135deg, #667eea, #764ba2)',
+      color: 'white',
+      border: 'none',
+      fontSize: 'clamp(20px, 4vw, 24px)',
+      cursor: 'pointer',
+      boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+      zIndex: 1000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
     notifOverlay: {
-      position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-      backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1100,
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      zIndex: 1100,
     },
     notifPanel: {
-      position: 'absolute', top: 0, right: 0, width: '85%', height: '100%',
-      backgroundColor: 'white', zIndex: 1200, padding: '20px',
-      overflowY: 'auto', boxShadow: '-5px 0 20px rgba(0,0,0,0.1)',
+      position: 'fixed',
+      top: 0,
+      right: 0,
+      width: '400px',
+      maxWidth: '90%',
+      height: '100%',
+      backgroundColor: 'white',
+      zIndex: 1200,
+      padding: '20px',
+      overflowY: 'auto',
+      boxShadow: '-5px 0 20px rgba(0,0,0,0.1)',
     },
     badge: {
-      position: 'absolute', top: '-6px', right: '12px',
-      backgroundColor: '#ff3b30', color: 'white',
-      fontSize: '10px', padding: '2px 6px', borderRadius: '10px',
-    }
+      position: 'absolute',
+      top: '-6px',
+      right: '-6px',
+      backgroundColor: '#ff3b30',
+      color: 'white',
+      fontSize: '12px',
+      padding: '4px 8px',
+      borderRadius: '12px',
+      minWidth: '20px',
+      textAlign: 'center',
+    },
   };
 
 
 return (
-    // Lớp bao ngoài cùng để căn giữa
-    <div style={styles.outerWrapper}>
-      
-      {/* Khung App chính */}
+    <Layout>
+      <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleFileChange} />
       <div style={styles.container}>
-        <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleFileChange} />
-
-        {/* HEADER */}
-        <div style={styles.header}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <p style={{ margin: 0, fontSize: '13px', opacity: 0.9 }}>Xin chào,</p>
-              <h2 style={{ margin: '5px 0 0 0', fontSize: '22px', fontWeight: 'bold' }}>
-                {account?.accountName ? account.accountName.toUpperCase() : (user?.accountName ? user.accountName.toUpperCase() : user?.username)}
-              </h2>
-            </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={() => navigate('/settings')} style={{background: 'rgba(255,255,255,0.2)', width: '35px', height: '35px', borderRadius: '50%', border: 'none', fontSize: '16px', cursor: 'pointer', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>⚙️</button>
-              <button onClick={handleLogout} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0 15px', borderRadius: '20px', cursor: 'pointer', fontSize: '12px', fontWeight: '600' }}>Đăng xuất</button>
-            </div>
-          </div>
+        {/* Welcome Section */}
+        <div style={styles.welcomeSection}>
+          <h2 style={{ margin: '0 0 clamp(0.5rem, 1.5vw, 0.75rem) 0', fontSize: 'clamp(20px, 4vw, 24px)', fontWeight: 'bold' }}>
+            Xin chào, {account?.accountName || user?.accountName || user?.username}
+          </h2>
+          <p style={{ margin: 0, opacity: 0.9, fontSize: 'clamp(14px, 2.5vw, 16px)' }}>Chào mừng bạn trở lại!</p>
         </div>
 
         {/* CARD TÀI KHOẢN */}
         <div style={styles.card}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <p style={{ margin: 0, color: '#888', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Tài khoản thanh toán</p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '5px' }}>
-                <p style={{ margin: 0, fontSize: '18px', fontWeight: '600', color: '#333', letterSpacing: '1px' }}>
+              <p style={{ margin: 0, color: '#666', fontSize: 'clamp(11px, 2vw, 12px)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Tài khoản thanh toán</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(0.5rem, 1.5vw, 0.75rem)', marginTop: 'clamp(0.25rem, 1vw, 0.5rem)' }}>
+                <p style={{ margin: 0, fontSize: 'clamp(16px, 3vw, 18px)', fontWeight: '600', color: '#333', letterSpacing: '1px' }}>
                   {showAccountDetails ? account?.accountNumber : '•••• •••• ••••'}
                 </p>
-                <button onClick={() => setShowAccountDetails(!showAccountDetails)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#007bff', fontSize: '16px', padding: 0 }}>
+                <button onClick={() => setShowAccountDetails(!showAccountDetails)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#007bff', fontSize: 'clamp(14px, 2.5vw, 16px)', padding: 0 }}>
                   {showAccountDetails ? '🙈' : '👁️'}
                 </button>
               </div>
             </div>
-            <div onClick={() => showFeature('Xác thực vân tay')} style={{ cursor: 'pointer', opacity: 0.5, fontSize: '24px' }}>👆</div>
+            <div onClick={() => showFeature('Xác thực vân tay')} style={{ cursor: 'pointer', opacity: 0.5, fontSize: 'clamp(20px, 4vw, 24px)' }}>👆</div>
           </div>
 
-          <hr style={{ border: 'none', borderTop: '1px dashed #eee', margin: '20px 0' }} />
+          <hr style={{ border: 'none', borderTop: '1px dashed #e0e0e0', margin: 'clamp(1rem, 3vw, 1.5rem) 0' }} />
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             <div>
-              <p style={{ margin: 0, color: '#888', fontSize: '12px' }}>Số dư khả dụng</p>
-              <p style={{ margin: '5px 0 0 0', fontSize: '26px', fontWeight: 'bold', color: '#28a745' }}>
+              <p style={{ margin: 0, color: '#666', fontSize: 'clamp(11px, 2vw, 12px)' }}>Số dư khả dụng</p>
+              <p style={{ margin: 'clamp(0.25rem, 1vw, 0.5rem) 0 0 0', fontSize: 'clamp(22px, 4vw, 26px)', fontWeight: 'bold', color: '#28a745' }}>
                 {!account ? (
                         <span style={{fontSize: '16px', color: '#999'}}>⏳ Đang cập nhật...</span>
                     ) : (
@@ -479,91 +434,88 @@ return (
               </p>
             </div>
             {showAccountDetails && (
-              <button onClick={handleDownloadQR} style={{ fontSize: '12px', padding: '8px 12px', background: '#f8f9fa', border: 'none', borderRadius: '8px', cursor: 'pointer', color: '#333', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <button onClick={handleDownloadQR} style={{ fontSize: 'clamp(11px, 2vw, 12px)', padding: 'clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)', background: '#f8f9fa', border: '1px solid #e0e0e0', borderRadius: 'clamp(6px, 1.5vw, 8px)', cursor: 'pointer', color: '#333', fontWeight: '600', display: 'flex', alignItems: 'center', gap: 'clamp(0.25rem, 1vw, 0.5rem)' }}>
                 ⬇ QR
               </button>
             )}
           </div>
         </div>
 
-        {/* LƯỚI TIỆN ÍCH */}
-        <h4 style={{ padding: '0 25px', margin: '10px 0 15px 0', color: '#333', fontSize: '15px', fontWeight: '700' }}>Dịch vụ tài chính</h4>
+        {/* Services Grid */}
+        <h3 style={{ margin: '0 0 20px 0', color: '#333', fontSize: '20px', fontWeight: '700' }}>Dịch vụ tài chính</h3>
         <div style={styles.gridContainer}>
           {features.map((item, index) => (
-            <div key={index} style={styles.gridItem} onClick={item.action}>
+            <div 
+              key={index} 
+              style={styles.gridItem} 
+              onClick={item.action}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+              }}
+            >
               <div style={{ ...styles.iconBox, background: item.bg, color: item.color }}>{item.icon}</div>
               <span style={styles.menuLabel}>{item.name}</span>
             </div>
           ))}
         </div>
 
-        {/* BANNER QUẢNG CÁO */}
+        {/* Banner */}
         <div style={styles.banner}>
-          <div style={{ flex: 1, zIndex: 1 }}>
-            <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>Sổ Tiết Kiệm Online</h4>
-            <p style={{ margin: '5px 0 0 0', fontSize: '12px', opacity: 0.9 }}>Lãi suất hấp dẫn tới 8.5%/năm</p>
-            <span style={{ fontSize: '10px', background: 'rgba(255,255,255,0.2)', padding: '3px 8px', borderRadius: '10px', marginTop: '8px', display: 'inline-block' }}>🔥 Hot</span>
+          <div>
+            <h4 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>Sổ Tiết Kiệm Online</h4>
+            <p style={{ margin: '8px 0 0 0', fontSize: '14px', opacity: 0.9 }}>Lãi suất hấp dẫn tới 8.5%/năm</p>
+            <span style={{ fontSize: '12px', background: 'rgba(255,255,255,0.2)', padding: '4px 10px', borderRadius: '12px', marginTop: '10px', display: 'inline-block' }}>🔥 Hot</span>
           </div>
-          <span style={{ fontSize: '50px', transform: 'rotate(-10deg)', opacity: 0.9 }}>💰</span>
+          <span style={{ fontSize: '60px', transform: 'rotate(-10deg)', opacity: 0.9 }}>💰</span>
         </div>
 
-        {/* BOTTOM BAR (MENU DƯỚI) */}
-        <div style={styles.bottomBar}>
-          <div style={{ ...styles.navItem, color: '#007bff' }}>
-            <span style={{ fontSize: '22px' }}>🏠</span>
-            <span style={{ marginTop: '3px' }}>Trang chủ</span>
-          </div>
+        {/* QR Scan Button */}
+        <button onClick={() => fileInputRef.current.click()} style={styles.scanButton}>
+          📸 Quét QR Code
+        </button>
 
-          <div style={{ ...styles.navItem, position: 'relative' }} onClick={() => setShowNotificationPanel(true)}>
-            <span style={{ fontSize: '22px' }}>🔔</span>
-            <span style={{ marginTop: '3px' }}>Thông báo</span>
-            {unreadCount > 0 && <span style={styles.badge}>{unreadCount}</span>}
-          </div>
-
-          {/* NÚT QUÉT QR Ở GIỮA */}
-          <div style={{ position: 'relative', width: '60px', display: 'flex', justifyContent: 'center' }}>
-            <button onClick={() => fileInputRef.current.click()} style={styles.scanBtn}>📸</button>
-          </div>
-
-          <div style={styles.navItem} onClick={() => showFeature('Lịch sử')}>
-            <span style={{ fontSize: '22px' }}>🕒</span>
-            <span style={{ marginTop: '3px' }}>Lịch sử</span>
-          </div>
-
-          <div style={styles.navItem} onClick={() => navigate('/settings')}>
-              <span style={{ fontSize: '22px' }}>⚙️</span>
-              <span style={{ marginTop: '3px' }}>Cài đặt</span>
-          </div>
-        </div>
+        {/* Notification Button */}
+        <button 
+          onClick={() => setShowNotificationPanel(true)} 
+          style={styles.notifButton}
+        >
+          🔔
+          {unreadCount > 0 && <span style={styles.badge}>{unreadCount}</span>}
+        </button>
 
         {/* PANEL THÔNG BÁO */}
         {showNotificationPanel && (
           <>
             <div style={styles.notifOverlay} onClick={() => setShowNotificationPanel(false)}></div>
             <div style={styles.notifPanel}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h3 style={{ margin: 0, fontSize: '18px' }}>Thông báo</h3>
-                <button onClick={() => setShowNotificationPanel(false)} style={{ border: 'none', background: 'none', fontSize: '24px', cursor: 'pointer', color: '#999' }}>&times;</button>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'clamp(1rem, 3vw, 1.5rem)' }}>
+                <h3 style={{ margin: 0, fontSize: 'clamp(16px, 3vw, 18px)', color: '#333', fontWeight: '600' }}>Thông báo</h3>
+                <button onClick={() => setShowNotificationPanel(false)} style={{ border: 'none', background: 'none', fontSize: 'clamp(20px, 4vw, 24px)', cursor: 'pointer', color: '#666' }}>&times;</button>
               </div>
               
               {notifications.length === 0 ? (
-                <div style={{ textAlign: 'center', marginTop: '50px', color: '#999' }}>
-                  <div style={{ fontSize: '40px', marginBottom: '10px' }}>📭</div>
-                  Chưa có thông báo mới
+                <div style={{ textAlign: 'center', marginTop: 'clamp(2rem, 5vw, 3rem)', color: '#666' }}>
+                  <div style={{ fontSize: 'clamp(32px, 6vw, 40px)', marginBottom: 'clamp(0.5rem, 1.5vw, 0.75rem)' }}>📭</div>
+                  <p style={{ fontSize: 'clamp(13px, 2.5vw, 14px)', color: '#666' }}>Chưa có thông báo mới</p>
                 </div>
               ) : (
                 <ul style={{ listStyle: 'none', padding: 0 }}>
                   {notifications.map((notif) => (
-                    <li key={notif.id} onClick={() => handleMarkAsRead(notif)} style={{ padding: '15px', borderBottom: '1px solid #f0f0f0', background: notif.isRead ? 'white' : '#f0f9ff', borderRadius: '10px', marginBottom: '10px', cursor: 'pointer', position: 'relative' }}>
-                      {!notif.isRead && <span style={{ position: 'absolute', top: '15px', right: '10px', width: '8px', height: '8px', background: '#007bff', borderRadius: '50%' }}></span>}
-                      <div style={{ fontWeight: '600', color: '#333', marginBottom: '5px', fontSize: '14px', lineHeight: '1.4' }}>{notif.description}</div>
-                      <div style={{ fontSize: '11px', color: '#888', marginBottom: '8px' }}>
-                        <div>Mã GD: <span style={{ fontFamily: 'monospace', background: '#eee', padding: '2px 4px', borderRadius: '4px' }}>{notif.transactionReference}</span></div>
-                        {notif.accountNumber && (<div style={{ marginTop: '2px' }}>TK: {notif.accountNumber}</div>)}
+                    <li key={notif.id} onClick={() => handleMarkAsRead(notif)} style={{ padding: 'clamp(0.75rem, 2vw, 1rem)', borderBottom: '1px solid #e0e0e0', background: notif.isRead ? '#ffffff' : '#f0f9ff', borderRadius: 'clamp(8px, 1.5vw, 10px)', marginBottom: 'clamp(0.5rem, 1.5vw, 0.75rem)', cursor: 'pointer', position: 'relative' }}>
+                      {!notif.isRead && <span style={{ position: 'absolute', top: 'clamp(0.75rem, 2vw, 1rem)', right: 'clamp(0.5rem, 1.5vw, 0.75rem)', width: 'clamp(6px, 1.5vw, 8px)', height: 'clamp(6px, 1.5vw, 8px)', background: '#007bff', borderRadius: '50%' }}></span>}
+                      <div style={{ fontWeight: '600', color: '#333', marginBottom: 'clamp(0.25rem, 1vw, 0.5rem)', fontSize: 'clamp(13px, 2.5vw, 14px)', lineHeight: '1.4' }}>{notif.description}</div>
+                      <div style={{ fontSize: 'clamp(10px, 2vw, 11px)', color: '#666', marginBottom: 'clamp(0.5rem, 1.5vw, 0.75rem)' }}>
+                        <div>Mã GD: <span style={{ fontFamily: 'monospace', background: '#f0f0f0', padding: 'clamp(0.125rem, 0.5vw, 0.25rem) clamp(0.25rem, 1vw, 0.5rem)', borderRadius: 'clamp(3px, 1vw, 4px)', color: '#333' }}>{notif.transactionReference}</span></div>
+                        {notif.accountNumber && (<div style={{ marginTop: 'clamp(0.125rem, 0.5vw, 0.25rem)', color: '#666' }}>TK: {notif.accountNumber}</div>)}
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                        <span style={{ color: '#aaa' }}>{new Date(notif.transactionDate).toLocaleString('vi-VN')}</span>
-                        <span style={{ fontWeight: 'bold', color: notif.amount.includes('-') ? '#dc3545' : '#28a745', fontSize: '13px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'clamp(11px, 2vw, 12px)' }}>
+                        <span style={{ color: '#666' }}>{new Date(notif.transactionDate).toLocaleString('vi-VN')}</span>
+                        <span style={{ fontWeight: 'bold', color: notif.amount.includes('-') ? '#dc3545' : '#28a745', fontSize: 'clamp(12px, 2.5vw, 13px)' }}>
                           {parseFloat(notif.amount).toLocaleString()} đ
                         </span>
                       </div>
@@ -576,16 +528,13 @@ return (
         )}
       </div>
 
-      {/* Đặt GlobalModal ở cuối cùng */}
+      {/* GlobalModal */}
       <GlobalModal 
           config={notification} 
           onClose={closeNotification} 
           styles={commonStyles} 
       />
-
-    </div>
-    
-
+    </Layout>
   );
 };
 

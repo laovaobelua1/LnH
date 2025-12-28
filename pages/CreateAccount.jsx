@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { bankingService } from '../services/bankingService';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { commonStyles } from '../styles/commonStyles';
-import GlobalModal from '../components/GlobalModal'; // Import Component
-import { useNotification } from '../utils/useNotification'; // Import Hook
-import { useGlobalLoading } from '../context/LoadingContext'; // Import Hook
+import GlobalModal from '../components/GlobalModal';
+import Layout from '../components/Layout';
+import { useNotification } from '../utils/useNotification';
+import { useGlobalLoading } from '../context/LoadingContext';
 
 const CreateAccount = () => {
   const navigate = useNavigate();
@@ -122,32 +123,61 @@ const CreateAccount = () => {
       borderLeft: '5px solid #2196f3', display: 'flex', alignItems: 'center', gap: '10px'
     },
     label: {
-      fontSize: '13px', fontWeight: '600', color: '#555',
-      marginBottom: '8px', display: 'block', textTransform: 'uppercase'
+      fontSize: 'clamp(12px, 2vw, 13px)', 
+      fontWeight: '600', 
+      color: '#333',
+      marginBottom: 'clamp(0.5rem, 1.5vw, 0.75rem)', 
+      display: 'block', 
+      textTransform: 'uppercase'
     },
     input: {
-      width: '100%', padding: '12px 15px', borderRadius: '10px',
-      border: '2px solid #eee', fontSize: '15px', outline: 'none',
-      transition: 'all 0.3s', backgroundColor: '#f9f9f9', boxSizing: 'border-box'
+      width: '100%', 
+      padding: 'clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem)', 
+      borderRadius: 'clamp(8px, 1.5vw, 10px)',
+      border: '2px solid #e0e0e0', 
+      fontSize: 'clamp(14px, 2.5vw, 15px)', 
+      outline: 'none',
+      transition: 'all 0.3s', 
+      backgroundColor: '#f9f9f9', 
+      color: '#333',
+      boxSizing: 'border-box'
     },
     select: {
-      width: '100%', padding: '12px 15px', borderRadius: '10px',
-      border: '2px solid #eee', fontSize: '15px', outline: 'none',
-      backgroundColor: 'white', cursor: 'pointer'
+      width: '100%', 
+      padding: 'clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem)', 
+      borderRadius: 'clamp(8px, 1.5vw, 10px)',
+      border: '2px solid #e0e0e0', 
+      fontSize: 'clamp(14px, 2.5vw, 15px)', 
+      outline: 'none',
+      backgroundColor: '#ffffff', 
+      color: '#333',
+      cursor: 'pointer'
     },
     btnSubmit: {
-      width: '100%', padding: '15px', borderRadius: '12px',
+      width: '100%', 
+      padding: 'clamp(0.75rem, 2vw, 1rem)', 
+      borderRadius: 'clamp(8px, 1.5vw, 12px)',
       border: 'none', 
-      background: 'linear-gradient(to right, #00c6ff, #0072ff)', // Gradient nút
-      color: 'white', fontSize: '16px', fontWeight: 'bold',
+      background: 'linear-gradient(to right, #00c6ff, #0072ff)',
+      color: '#ffffff', 
+      fontSize: 'clamp(14px, 2.5vw, 16px)', 
+      fontWeight: 'bold',
       cursor: isLoading ? 'not-allowed' : 'pointer',
       boxShadow: '0 8px 20px rgba(0, 114, 255, 0.3)',
-      marginTop: '10px', transition: 'transform 0.2s'
+      marginTop: 'clamp(0.5rem, 1.5vw, 0.75rem)', 
+      transition: 'transform 0.2s'
     },
     btnCancel: {
-      width: '100%', padding: '12px', marginTop: '15px',
-      background: 'white', border: '1px solid #ddd', borderRadius: '12px',
-      color: '#666', fontWeight: '600', cursor: 'pointer'
+      width: '100%', 
+      padding: 'clamp(0.75rem, 2vw, 1rem)', 
+      marginTop: 'clamp(0.75rem, 2vw, 1rem)',
+      background: '#ffffff', 
+      border: '1px solid #ddd', 
+      borderRadius: 'clamp(8px, 1.5vw, 12px)',
+      color: '#333', 
+      fontWeight: '600', 
+      cursor: 'pointer',
+      fontSize: 'clamp(13px, 2.5vw, 14px)'
     },
     // RESULT CARD
     resultCard: {
@@ -171,23 +201,20 @@ const CreateAccount = () => {
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
 
-      <div style={styles.wrapper}>
-        <div style={styles.glassCard}>
-          
-          {/* Nút Back nhỏ ở góc */}
-          <button onClick={handleCancel} style={{position: 'absolute', top: '20px', left: '20px', border: 'none', background: 'none', fontSize: '20px', cursor: 'pointer', color: '#999'}}>⬅</button>
+      <Layout>
+        <div style={{maxWidth: 'min(600px, 95vw)', margin: '0 auto', backgroundColor: '#ffffff', borderRadius: 'clamp(8px, 1.5vw, 12px)', padding: 'clamp(2rem, 5vw, 3rem)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)'}}>
 
           <div style={styles.header}>
-             <div style={{fontSize: '40px', marginBottom: '10px'}}>🏦</div>
-             <h2 style={styles.title}>{!result ? 'Kích Hoạt Tài Khoản' : 'Mở Tài Khoản Thành Công'}</h2>
+             <div style={{fontSize: 'clamp(32px, 6vw, 40px)', marginBottom: 'clamp(0.5rem, 1.5vw, 0.75rem)'}}>🏦</div>
+             <h2 style={{...styles.title, color: '#333'}}>{!result ? 'Kích Hoạt Tài Khoản' : 'Mở Tài Khoản Thành Công'}</h2>
           </div>
 
           {currentUser && !result && (
             <div style={styles.welcomeBox}>
-               <span style={{fontSize: '24px'}}>👋</span>
-               <div>
-                  Xin chào <strong>{currentUser.username || currentUser.accountName}</strong>!
-                  <div style={{fontSize: '12px', opacity: 0.8}}>Hoàn tất thiết lập bên dưới để bắt đầu giao dịch.</div>
+               <span style={{fontSize: 'clamp(20px, 4vw, 24px)'}}>👋</span>
+               <div style={{color: '#333'}}>
+                  Xin chào <strong style={{color: '#333'}}>{currentUser.username || currentUser.accountName}</strong>!
+                  <div style={{fontSize: 'clamp(11px, 2vw, 12px)', opacity: 0.8, color: '#666', marginTop: 'clamp(0.25rem, 1vw, 0.5rem)'}}>Hoàn tất thiết lập bên dưới để bắt đầu giao dịch.</div>
                </div>
             </div>
           )}
@@ -291,13 +318,13 @@ const CreateAccount = () => {
             </div>
           )}
         </div>
-        {/* Đặt GlobalModal ở cuối cùng */}
+        {/* GlobalModal */}
         <GlobalModal 
             config={notification} 
             onClose={closeNotification} 
             styles={commonStyles} 
         />
-      </div>
+      </Layout>
     </>
   );
 };

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { bankingService } from '../services/bankingService';
 import { commonStyles } from '../styles/commonStyles';
-import GlobalModal from '../components/GlobalModal'; // Import Component
-import { useNotification } from '../utils/useNotification'; // Import Hook
-import { useGlobalLoading } from '../context/LoadingContext'; // Import Hook
+import GlobalModal from '../components/GlobalModal';
+import Layout from '../components/Layout';
+import { useNotification } from '../utils/useNotification';
+import { useGlobalLoading } from '../context/LoadingContext';
 
 const UpdateAccount = () => {
   const navigate = useNavigate();
@@ -125,28 +126,49 @@ const UpdateAccount = () => {
     title: {
       textAlign: 'center', color: '#333', fontSize: '24px', fontWeight: 'bold', marginBottom: '30px'
     },
-    inputGroup: { marginBottom: '20px' },
-    label: { display: 'block', marginBottom: '8px', color: '#555', fontWeight: '600', fontSize: '14px' },
+    inputGroup: { marginBottom: 'clamp(1rem, 3vw, 1.5rem)' },
+    label: { 
+      display: 'block', 
+      marginBottom: 'clamp(0.5rem, 1.5vw, 0.75rem)', 
+      color: '#333', 
+      fontWeight: '600', 
+      fontSize: 'clamp(13px, 2.5vw, 14px)' 
+    },
     input: {
-      width: '100%', padding: '12px 15px',
-      borderRadius: '12px', border: '1px solid #ddd',
-      fontSize: '16px', outline: 'none', transition: '0.3s',
-      backgroundColor: '#fff',
-      boxSizing: 'border-box' // Quan trọng để không bị tràn
+      width: '100%', 
+      padding: 'clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem)',
+      borderRadius: 'clamp(8px, 1.5vw, 12px)', 
+      border: '1px solid #ddd',
+      fontSize: 'clamp(14px, 2.5vw, 16px)', 
+      outline: 'none', 
+      transition: '0.3s',
+      backgroundColor: '#ffffff',
+      color: '#333',
+      boxSizing: 'border-box'
     },
     inputDisabled: {
-      width: '100%', padding: '12px 15px',
-      borderRadius: '12px', border: '1px solid #eee',
-      fontSize: '16px', outline: 'none',
-      backgroundColor: '#f9f9f9', color: '#999',
+      width: '100%', 
+      padding: 'clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem)',
+      borderRadius: 'clamp(8px, 1.5vw, 12px)', 
+      border: '1px solid #e0e0e0',
+      fontSize: 'clamp(14px, 2.5vw, 16px)', 
+      outline: 'none',
+      backgroundColor: '#f9f9f9', 
+      color: '#666',
       boxSizing: 'border-box'
     },
     button: {
-      width: '100%', padding: '15px',
+      width: '100%', 
+      padding: 'clamp(0.75rem, 2vw, 1rem)',
       background: 'linear-gradient(to right, #4facfe 0%, #00f2fe 100%)',
-      color: 'white', border: 'none', borderRadius: '12px',
-      fontSize: '16px', fontWeight: 'bold', cursor: 'pointer',
-      marginTop: '10px', boxShadow: '0 5px 15px rgba(79, 172, 254, 0.4)',
+      color: '#ffffff', 
+      border: 'none', 
+      borderRadius: 'clamp(8px, 1.5vw, 12px)',
+      fontSize: 'clamp(14px, 2.5vw, 16px)', 
+      fontWeight: 'bold', 
+      cursor: 'pointer',
+      marginTop: 'clamp(0.5rem, 1.5vw, 0.75rem)', 
+      boxShadow: '0 5px 15px rgba(79, 172, 254, 0.4)',
       opacity: isLoading ? 0.7 : 1
     },
     backButton: {
@@ -154,12 +176,12 @@ const UpdateAccount = () => {
     }
   };
 
-  if (fetching) return <div style={{textAlign: 'center', marginTop: '50px'}}>⏳ Đang tải thông tin...</div>;
+  if (fetching) return <div style={{textAlign: 'center', marginTop: 'clamp(2rem, 5vw, 3rem)', color: '#333', fontSize: 'clamp(14px, 2.5vw, 16px)'}}>⏳ Đang tải thông tin...</div>;
 
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>✏️ Cập Nhật Tài Khoản</h2>
+    <Layout>
+      <div style={{maxWidth: 'min(600px, 95vw)', margin: '0 auto', backgroundColor: '#ffffff', borderRadius: 'clamp(8px, 1.5vw, 12px)', padding: 'clamp(2rem, 5vw, 3rem)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)'}}>
+        <h2 style={{fontSize: 'clamp(20px, 4vw, 24px)', fontWeight: '600', marginBottom: 'clamp(1.5rem, 4vw, 2.5rem)', color: '#333'}}>✏️ Cập Nhật Tài Khoản</h2>
 
         <form onSubmit={handleUpdate}>
           {/* 1. Tên tài khoản (CHO PHÉP SỬA) */}
@@ -216,18 +238,31 @@ const UpdateAccount = () => {
           </button>
         </form>
 
-        <div style={styles.backButton} onClick={() => navigate('/settings')}>
+        <button 
+          onClick={() => navigate('/settings')} 
+          style={{
+            width: '100%',
+            padding: '12px',
+            marginTop: '20px',
+            backgroundColor: '#f0f0f0',
+            border: '1px solid #ddd',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '500',
+          }}
+        >
           Quay lại Cài đặt
-        </div>
+        </button>
 
+        {/* GlobalModal */}
+        <GlobalModal 
+            config={notification} 
+            onClose={closeNotification} 
+            styles={commonStyles} 
+        />
       </div>
-      {/* Đặt GlobalModal ở cuối cùng */}
-      <GlobalModal 
-          config={notification} 
-          onClose={closeNotification} 
-          styles={commonStyles} 
-      />
-    </div>
+    </Layout>
   );
 };
 

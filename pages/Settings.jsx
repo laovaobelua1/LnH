@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { bankingService } from '../services/bankingService';
 import { commonStyles } from '../styles/commonStyles';
-import GlobalModal from '../components/GlobalModal'; // Import Component
-import { useNotification } from '../utils/useNotification'; // Import Hook
+import GlobalModal from '../components/GlobalModal';
+import Layout from '../components/Layout';
+import { useNotification } from '../utils/useNotification';
 
 
 const Settings = () => {
@@ -111,13 +112,26 @@ const Settings = () => {
     },
     
     // List Menu
-    sectionTitle: { padding: '20px 20px 10px 20px', fontSize: '14px', fontWeight: 'bold', color: '#888', textTransform: 'uppercase' },
-    menuList: { padding: '0 20px' },
-    menuItem: {
-      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      padding: '15px 0', borderBottom: isDarkMode ? '1px solid #333' : '1px solid #f0f0f0'
+    sectionTitle: { 
+      padding: 'clamp(1rem, 3vw, 1.5rem) clamp(1rem, 3vw, 1.5rem) clamp(0.5rem, 1.5vw, 0.75rem) clamp(1rem, 3vw, 1.5rem)', 
+      fontSize: 'clamp(12px, 2vw, 14px)', 
+      fontWeight: 'bold', 
+      color: '#555', 
+      textTransform: 'uppercase' 
     },
-    menuLabel: { fontSize: '16px', fontWeight: '500' },
+    menuList: { padding: '0 clamp(1rem, 3vw, 1.5rem)' },
+    menuItem: {
+      display: 'flex', 
+      justifyContent: 'space-between', 
+      alignItems: 'center',
+      padding: 'clamp(0.75rem, 2vw, 1rem) 0', 
+      borderBottom: isDarkMode ? '1px solid #333' : '1px solid #e0e0e0'
+    },
+    menuLabel: { 
+      fontSize: 'clamp(14px, 2.5vw, 16px)', 
+      fontWeight: '500',
+      color: '#333'
+    },
     
     // Switch Toggle (CSS thuần)
     switch: { position: 'relative', display: 'inline-block', width: '50px', height: '26px' },
@@ -132,8 +146,12 @@ const Settings = () => {
     }),
     
     select: {
-      padding: '8px', borderRadius: '8px', border: '1px solid #ccc',
-      backgroundColor: isDarkMode ? '#333' : 'white', color: isDarkMode ? 'white' : 'black'
+      padding: 'clamp(0.5rem, 1.5vw, 0.75rem)', 
+      borderRadius: 'clamp(6px, 1.5vw, 8px)', 
+      border: '1px solid #ccc',
+      backgroundColor: isDarkMode ? '#333' : '#ffffff', 
+      color: isDarkMode ? '#ffffff' : '#333',
+      fontSize: 'clamp(13px, 2.5vw, 14px)'
     }
   };
 
@@ -146,9 +164,8 @@ const Settings = () => {
   );
 
   return (
-    <div style={styles.outerWrapper}>
-      <div style={styles.container}>
-        
+    <Layout>
+      <div style={{maxWidth: '800px', margin: '0 auto'}}>
         {/* Input file ẩn để chọn ảnh */}
         <input 
           type="file" ref={fileInputRef} 
@@ -157,9 +174,8 @@ const Settings = () => {
         />
 
         {/* HEADER */}
-        <div style={styles.header}>
-          <button onClick={() => navigate('/dashboard')} style={styles.backBtn}>⬅</button>
-          <h2 style={{ margin: 0, fontSize: '18px' }}>Cài đặt</h2>
+        <div style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: 'clamp(1.5rem, 4vw, 2.5rem)', borderRadius: 'clamp(8px, 1.5vw, 12px)', color: '#ffffff', marginBottom: 'clamp(1.5rem, 4vw, 2.5rem)', textAlign: 'center'}}>
+          <h2 style={{ margin: 0, fontSize: 'clamp(20px, 4vw, 24px)', fontWeight: '600', color: '#ffffff' }}>Cài đặt</h2>
         </div>
 
         {/* PROFILE & AVATAR */}
@@ -168,8 +184,8 @@ const Settings = () => {
             <img src={avatar} alt="Avatar" style={styles.avatarImg} />
             <div style={styles.cameraBtn} onClick={() => fileInputRef.current.click()}>📷</div>
           </div>
-          <h3 style={{ margin: 0 }}>{user.accountName || user.username}</h3>
-          <p style={{ margin: '5px 0 0 0', color: '#888', fontSize: '13px' }}>Thay đổi thông tin cá nhân</p>
+          <h3 style={{ margin: 0, color: '#333', fontSize: 'clamp(18px, 3vw, 20px)' }}>{user.accountName || user.username}</h3>
+          <p style={{ margin: '5px 0 0 0', color: '#666', fontSize: 'clamp(12px, 2vw, 13px)' }}>Thay đổi thông tin cá nhân</p>
         </div>
 
         {/* NHÓM 1: CÁ NHÂN HÓA */}
@@ -222,13 +238,14 @@ const Settings = () => {
             <span style={styles.menuLabel}>📝 Cập nhật thông tin tài khoản</span>
             <button 
               style={{
-                padding: '5px 10px', 
-                fontSize: '12px',
-                backgroundColor: '#007bff', // Thêm màu xanh cho nút này để nổi bật hơn chút (tùy chọn)
-                color: 'white',
+                padding: 'clamp(0.25rem, 1vw, 0.5rem) clamp(0.5rem, 1.5vw, 0.75rem)', 
+                fontSize: 'clamp(11px, 2vw, 12px)',
+                backgroundColor: '#007bff',
+                color: '#ffffff',
                 border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
+                borderRadius: 'clamp(4px, 1vw, 6px)',
+                cursor: 'pointer',
+                fontWeight: '500'
               }} 
               onClick={() => navigate('/update-account')}
             >
@@ -238,7 +255,21 @@ const Settings = () => {
 
           <div style={styles.menuItem}>
             <span style={styles.menuLabel}>🔐 Đổi mật khẩu đăng nhập</span>
-            <button style={{padding: '5px 10px', fontSize: '12px'}} onClick={() => showSuccess("Chức năng đang phát triển")}>Thay đổi</button>
+            <button 
+            style={{
+              padding: 'clamp(0.25rem, 1vw, 0.5rem) clamp(0.5rem, 1.5vw, 0.75rem)', 
+              fontSize: 'clamp(11px, 2vw, 12px)',
+              backgroundColor: '#f0f0f0',
+              color: '#333',
+              border: '1px solid #ddd',
+              borderRadius: 'clamp(4px, 1vw, 6px)',
+              cursor: 'pointer',
+              fontWeight: '500'
+            }} 
+            onClick={() => showSuccess("Chức năng đang phát triển")}
+          >
+            Thay đổi
+          </button>
           </div>
         </div>
 
@@ -247,24 +278,30 @@ const Settings = () => {
           <button 
             onClick={handleLogout}
             style={{
-              width: '100%', padding: '15px', borderRadius: '12px', border: 'none',
-              backgroundColor: '#ffebee', color: '#c62828', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer'
+              width: '100%', 
+              padding: 'clamp(0.75rem, 2vw, 1rem)', 
+              borderRadius: 'clamp(8px, 1.5vw, 12px)', 
+              border: 'none',
+              backgroundColor: '#ffebee', 
+              color: '#c62828', 
+              fontWeight: 'bold', 
+              fontSize: 'clamp(14px, 2.5vw, 16px)', 
+              cursor: 'pointer'
             }}
           >
             Đăng xuất
           </button>
-          <p style={{textAlign: 'center', color: '#999', fontSize: '11px', marginTop: '10px'}}>Phiên bản: 1.0.5</p>
+          <p style={{textAlign: 'center', color: '#666', fontSize: 'clamp(10px, 2vw, 11px)', marginTop: 'clamp(0.5rem, 1.5vw, 0.75rem)'}}>Phiên bản: 1.0.5</p>
         </div>
 
+        {/* GlobalModal */}
+        <GlobalModal 
+            config={notification} 
+            onClose={closeNotification} 
+            styles={commonStyles} 
+        />
       </div>
-
-      {/* Đặt GlobalModal ở cuối cùng */}
-      <GlobalModal 
-          config={notification} 
-          onClose={closeNotification} 
-          styles={commonStyles} 
-      />
-    </div>
+    </Layout>
   );
 };
 
