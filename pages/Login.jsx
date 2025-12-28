@@ -102,7 +102,8 @@ const Login = () => {
       borderRadius: '12px', border: '1px solid #e0e0e0',
       fontSize: '15px', outline: 'none',
       background: 'rgba(255,255,255,0.8)',
-      transition: 'all 0.3s', boxSizing: 'border-box'
+      transition: 'all 0.3s', boxSizing: 'border-box',
+      color: '#213547'
     },
     eyeIcon: {
       position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)',
@@ -169,22 +170,22 @@ const Login = () => {
           {/* Error Message */}
           {loginError && (
             <div style={styles.errorBox}>
-              ⚠️ Tên đăng nhập hoặc mật khẩu sai!
+              Tên đăng nhập hoặc mật khẩu sai!
             </div>
           )}
 
           <form onSubmit={handleLogin}>
-            {/* Username Input */}
+            {/* Username */}
             <div style={styles.inputGroup}>
               <span style={styles.inputIcon}>👤</span>
-              <input 
+              <input
                 type="text" placeholder="Tên đăng nhập" 
                 value={username} onChange={(e) => setUsername(e.target.value)} 
                 required style={styles.input}
               />
             </div>
 
-            {/* Password Input */}
+            {/* Password */}
             <div style={styles.inputGroup}>
               <span style={styles.inputIcon}>🔒</span>
               <input 
@@ -205,10 +206,9 @@ const Login = () => {
             {/* Submit Button */}
             <button 
               type="submit" 
-              disabled={isLoading} // 1. Dùng biến isLoading từ Context
+              disabled={isLoading} 
               style={{
                 ...styles.button, 
-                // 2. Thêm logic đè style tại đây (vì style gốc giờ là tĩnh)
                 opacity: isLoading ? 0.7 : 1,
                 cursor: isLoading ? 'not-allowed' : 'pointer'
               }}

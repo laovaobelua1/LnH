@@ -158,7 +158,7 @@ const handleLogout = () => {
     // 1. Ngắt kết nối STOMP
     if (stompClient.current) {
         stompClient.current.deactivate(); 
-        console.log("🛑 Đã ngắt kết nối STOMP");
+        console.log("Đã ngắt kết nối STOMP");
     }
 
     // 2. Dừng âm thanh (SỬA LẠI ĐOẠN NÀY)

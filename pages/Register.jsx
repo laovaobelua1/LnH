@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { bankingService } from '../services/bankingService';
 import { useNavigate } from 'react-router-dom';
 import { commonStyles } from '../styles/commonStyles';
-import GlobalModal from '../components/GlobalModal'; // Import Component
-import { useNotification } from '../utils/useNotification'; // Import Hook
-import { useGlobalLoading } from '../context/LoadingContext'; // Import Hook
+import GlobalModal from '../components/GlobalModal'; 
+import { useNotification } from '../utils/useNotification'; 
+import { useGlobalLoading } from '../context/LoadingContext'; 
 
 const Register = () => {
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const Register = () => {
   const handleGoBack = (e) => {
     if (e) e.preventDefault();
     if (isDirty) {
-        if (!window.confirm("⚠️ Bạn có chắc muốn thoát? Thông tin nhập dở sẽ bị mất.")) return;
+        if (!window.confirm("Bạn có chắc muốn thoát? Thông tin nhập dở sẽ bị mất.")) return;
     }
     bankingService.logout();
     navigate('/'); 
@@ -57,35 +57,33 @@ const Register = () => {
     setErrorMessage('');
 
     if (formData.password.length < 6) {
-        setErrorMessage("⚠️ Mật khẩu quá ngắn (tối thiểu 6 ký tự)!");
+        setErrorMessage("Mật khẩu quá ngắn (tối thiểu 6 ký tự)!");
         hideLoading(); return;
     }
     if (formData.password !== formData.confirmPassword) {
-      setErrorMessage("❌ Mật khẩu xác nhận không khớp!");
+      setErrorMessage("Mật khẩu xác nhận không khớp!");
       hideLoading(); return;
     }
 
     try {
       const res = await bankingService.register(formData.username, formData.email, formData.password);
       setIsDirty(false);
-      showSuccess(`✅ Đăng ký thành công! Vui lòng đăng nhập.`);
+      showSuccess(`Đăng ký thành công!`);
       navigate('/'); 
     } catch (error) {
       const msg = error.response?.data?.message || '';
-      if (msg.includes("Username")) setErrorMessage("⚠️ Tên đăng nhập đã tồn tại!");
-      else if (msg.includes("Email")) setErrorMessage("⚠️ Email này đã được sử dụng!");
+      if (msg.includes("Username")) setErrorMessage("Tên đăng nhập đã tồn tại!");
+      else if (msg.includes("Email")) setErrorMessage("Email này đã được sử dụng!");
       else setErrorMessage(msg || 'Đăng ký thất bại!');
     } finally {
       hideLoading();
     }
   };
 
-  // --- STYLES "LỘNG LẪY" ---
   const styles = {
     wrapper: {
       minHeight: '100vh',
       width: '100%',
-      // Gradient nền động cực đẹp
       background: 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)',
       backgroundSize: '400% 400%',
       animation: 'gradientBG 15s ease infinite',
@@ -98,7 +96,7 @@ const Register = () => {
     glassCard: {
       width: '100%',
       maxWidth: '420px',
-      // Hiệu ứng kính mờ (Glassmorphism)
+      // Hiệu ứng kính mờ 
       background: 'rgba(255, 255, 255, 0.85)',
       backdropFilter: 'blur(20px)',
       WebkitBackdropFilter: 'blur(20px)',
@@ -133,7 +131,7 @@ const Register = () => {
       fontSize: '18px', opacity: 0.5
     },
     input: {
-      width: '100%', padding: '14px 14px 14px 45px', // Padding trái né icon
+      width: '100%', padding: '14px 14px 14px 45px',
       border: 'none', background: 'transparent',
       fontSize: '15px', outline: 'none', color: '#333',
       borderRadius: '12px'
@@ -251,11 +249,10 @@ const Register = () => {
 
             <button 
               type="submit" 
-              disabled={isLoading} // 1. Dùng biến từ Context (nhớ đổi loading -> isLoading)
+              disabled={isLoading} 
               style={{
-                ...styles.submitBtn, // 2. Kế thừa style đẹp (gradient, shadow...)
+                ...styles.submitBtn, 
                 
-                // 3. Ghi đè logic hiển thị trạng thái loading tại đây
                 opacity: isLoading ? 0.7 : 1,
                 cursor: isLoading ? 'not-allowed' : 'pointer'
               }}
@@ -265,9 +262,6 @@ const Register = () => {
             </button>
           </form>
 
-          <button type="button" onClick={handleGoBack} style={styles.cancelBtn}>
-             Hủy bỏ & Quay lại
-          </button>
 
           <div style={{marginTop: '20px', textAlign: 'center', fontSize: '13px', color: '#666'}}>
              Đã là thành viên? <span onClick={handleGoBack} style={{color: '#DD2476', fontWeight: 'bold', cursor: 'pointer', textDecoration: 'underline'}}>Đăng nhập tại đây</span>
